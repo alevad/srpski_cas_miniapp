@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
@@ -18,9 +18,29 @@
   </main>
 
   <script>
+    const API_BASE = 'https://api.intelahost.org';
     const status = document.getElementById('status');
+
     if (window.Telegram && window.Telegram.WebApp) {
       status.textContent = 'Mini App открыт через Telegram WebApp';
+      const initData = window.Telegram.WebApp.initData || '';
+
+      if (initData) {
+        fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data && data.ok) {
+              status.textContent = 'Доступ подтверждён';
+            } else {
+              status.textContent = `Ответ backend: ${JSON.stringify(data)}`;
+            }
+          })
+          .catch((err) => {
+            status.textContent = `Ошибка запроса: ${err}`;
+          });
+      } else {
+        status.textContent = 'initData отсутствует (открыто не из Telegram)';
+      }
     } else {
       status.textContent = 'Откройте страницу из Telegram WebApp';
     }
