@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Srpski_Cas Mini App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Srpski_Cas Mini App</h1>
+    <p>Минимальная стартовая страница для Mini App.</p>
+    <div class="card">
+      <div class="label">Статус</div>
+      <div id="status">Ожидание запуска в Telegram…</div>
+    </div>
+    <a class="btn" href="https://t.me/SrpskiCas_bot">Открыть бота</a>
+  </main>
+
+  <script>
+    const status = document.getElementById('status');
+    if (window.Telegram && window.Telegram.WebApp) {
+      status.textContent = 'Mini App открыт через Telegram WebApp';
+    } else {
+      status.textContent = 'Откройте страницу из Telegram WebApp';
+    }
+  </script>
+</body>
+</html>

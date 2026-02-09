@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  background: #0f1218;
+  color: #e9eef6;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.card {
+  background: #171c26;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0 24px;
+}
+
+.label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9fb0c9;
+  margin-bottom: 6px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 18px;
+  background: #4c7dff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+}
