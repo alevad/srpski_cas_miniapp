@@ -23,29 +23,43 @@
     const status = document.getElementById('status');
     const tg = window.Telegram && window.Telegram.WebApp;
 
+    function getInitData() {
+      if (tg && tg.initData) {
+        return tg.initData;
+      }
+      const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+      const search = window.location.search.startsWith('?') ? window.location.search.slice(1) : '';
+      const params = new URLSearchParams(hash || search);
+      const raw = params.get('tgWebAppData') || '';
+      return raw ? decodeURIComponent(raw) : '';
+    }
+
+    const initData = getInitData();
+
     if (tg) {
       tg.ready();
       status.textContent = 'Mini App открыт через Telegram WebApp';
-      const initData = tg.initData || '';
-
-      if (initData) {
-        fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
-          .then((r) => r.json())
-          .then((data) => {
-            if (data && data.ok) {
-              status.textContent = 'Доступ подтверждён';
-            } else {
-              status.textContent = `Ответ backend: ${JSON.stringify(data)}`;
-            }
-          })
-          .catch((err) => {
-            status.textContent = `Ошибка запроса: ${err}`;
-          });
-      } else {
-        status.textContent = 'initData отсутствует (открыто не из WebApp)';
-      }
+    } else if (initData) {
+      status.textContent = 'Mini App открыт через Telegram (initData из URL)';
     } else {
       status.textContent = 'Откройте страницу из Telegram WebApp';
+    }
+
+    if (initData) {
+      fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.ok) {
+            status.textContent = 'Доступ подтверждён';
+          } else {
+            status.textContent = `Ответ backend: ${JSON.stringify(data)}`;
+          }
+        })
+        .catch((err) => {
+          status.textContent = `Ошибка запроса: ${err}`;
+        });
+    } else if (tg) {
+      status.textContent = 'initData отсутствует (открыто не из WebApp)';
     }
   </script>
 </body>
