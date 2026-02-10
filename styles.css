@@ -53,8 +53,9 @@ body {
 }
 
 .brand-logo {
-  width: 64px;
   height: 64px;
+  width: auto;
+  margin-top: 16px;
   display: block;
 }
 
@@ -63,7 +64,7 @@ body {
   border-radius: 14px;
   background: var(--surface-strong);
   border: 1px solid var(--border);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   display: flex;
   justify-content: space-between;
@@ -100,7 +101,7 @@ body {
 }
 
 .phrase {
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.4;
   margin-bottom: 18px;
   text-align: center;
@@ -108,7 +109,7 @@ body {
 
 .answer {
   margin-top: 14px;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--accent);
   text-align: center;
 }
@@ -208,9 +209,13 @@ body {
     font-size: 20px;
   }
 
+  .progress {
+    font-size: 20px;
+  }
+
   .phrase,
   .answer {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .grades {

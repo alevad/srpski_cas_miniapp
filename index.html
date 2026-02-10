@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260210-7" />
+  <link rel="stylesheet" href="styles.css?v=20260210-9" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -22,39 +22,39 @@
     </header>
 
     <div class="progress" id="progress">
-      <span id="sceneLabel">A1 • Сцена 01</span>
+      <span id="sceneLabel">A1 вЂў РЎС†РµРЅР° 01</span>
       <span id="cardCounter">1/6</span>
     </div>
 
     <section class="panel" id="gate">
-      <h1>Тренажёр живой речи</h1>
-      <p class="lead">Слушай → повторяй → оценивай. Короткая A1‑сессия.</p>
+      <h1>РўСЂРµРЅР°Р¶С‘СЂ Р¶РёРІРѕР№ СЂРµС‡Рё</h1>
+      <p class="lead">РЎР»СѓС€Р°Р№ в†’ РїРѕРІС‚РѕСЂСЏР№ в†’ РѕС†РµРЅРёРІР°Р№. РљРѕСЂРѕС‚РєР°СЏ A1вЂ‘СЃРµСЃСЃРёСЏ.</p>
       <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
-      <div class="hint" id="startHint">Нажмите Start, чтобы разрешить автозвук.</div>
+      <div class="hint" id="startHint">РќР°Р¶РјРёС‚Рµ Start, С‡С‚РѕР±С‹ СЂР°Р·СЂРµС€РёС‚СЊ Р°РІС‚РѕР·РІСѓРє.</div>
     </section>
 
     <section class="panel hidden" id="trainer">
       <div class="phrase" id="ruText"></div>
-      <button class="btn play" id="playBtn" type="button">▶ Слушать</button>
-      <button class="btn ghost" id="revealBtn" type="button">Показать ответ</button>
+      <button class="btn play" id="playBtn" type="button">в–¶ РЎР»СѓС€Р°С‚СЊ</button>
+      <button class="btn ghost" id="revealBtn" type="button">РџРѕРєР°Р·Р°С‚СЊ РѕС‚РІРµС‚</button>
       <div class="answer hidden" id="srText"></div>
       <div class="grades hidden" id="grades">
-        <button class="grade hard" data-grade="hard" type="button">Тяжело</button>
-        <button class="grade good" data-grade="good" type="button">Хорошо</button>
-        <button class="grade easy" data-grade="easy" type="button">Легко</button>
+        <button class="grade hard" data-grade="hard" type="button">РўСЏР¶РµР»Рѕ</button>
+        <button class="grade good" data-grade="good" type="button">РҐРѕСЂРѕС€Рѕ</button>
+        <button class="grade easy" data-grade="easy" type="button">Р›РµРіРєРѕ</button>
       </div>
     </section>
 
     <section class="panel hidden" id="blocked">
-      <h2>Доступ не подтверждён</h2>
-      <p class="lead">Откройте Mini App через кнопку меню в чате бота.</p>
-      <button class="btn primary" id="openBotBtn" type="button">Открыть бота</button>
+      <h2>Р”РѕСЃС‚СѓРї РЅРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ</h2>
+      <p class="lead">РћС‚РєСЂРѕР№С‚Рµ Mini App С‡РµСЂРµР· РєРЅРѕРїРєСѓ РјРµРЅСЋ РІ С‡Р°С‚Рµ Р±РѕС‚Р°.</p>
+      <button class="btn primary" id="openBotBtn" type="button">РћС‚РєСЂС‹С‚СЊ Р±РѕС‚Р°</button>
     </section>
 
     <section class="panel hidden" id="finished">
-      <h2>Сессия завершена</h2>
-      <p class="lead">Вы прошли <span id="doneCount">0</span> фраз.</p>
-      <button class="btn primary" id="restartBtn" type="button">Ещё раз</button>
+      <h2>РЎРµСЃСЃРёСЏ Р·Р°РІРµСЂС€РµРЅР°</h2>
+      <p class="lead">Р’С‹ РїСЂРѕС€Р»Рё <span id="doneCount">0</span> С„СЂР°Р·.</p>
+      <button class="btn primary" id="restartBtn" type="button">Р•С‰С‘ СЂР°Р·</button>
     </section>
   </main>
 
@@ -80,22 +80,20 @@
 
     const tg = window.Telegram && window.Telegram.WebApp;
     const STORAGE_KEY = 'sc_miniapp_state_v1';
-    const HAS_REAL_AUDIO = false;
+    const DATA_URL = 'data/a1_greet.json?v=20260210-2';
+    const SCENE_TITLE = 'Сцена 01';
+    const AUDIO_BASE = 'audio/a1_greet';
+    const audioPlayer = new Audio();
 
-    const deck = [
-      { ru: 'Привет! Как дела?', sr: 'Zdravo! Kako si?' },
-      { ru: 'Я из России.', sr: 'Ja sam iz Rusije.' },
-      { ru: 'Где находится вокзал?', sr: 'Gde je železnička stanica?' },
-      { ru: 'Мне нужна помощь.', sr: 'Treba mi pomoć.' },
-      { ru: 'Сколько это стоит?', sr: 'Koliko to košta?' },
-      { ru: 'Спасибо! Пока.', sr: 'Hvala! Ćao.' },
-    ];
+    let deck = [];
 
     const state = {
       accessOk: false,
       index: 0,
       revealed: false,
       started: false,
+      audioUrl: '',
+      deckReady: false,
     };
 
     function show(el) {
@@ -132,6 +130,13 @@
     }
 
     function renderCard() {
+      if (!deck.length) {
+        ruText.textContent = 'РљРѕРЅС‚РµРЅС‚ Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏвЂ¦';
+        srText.textContent = '';
+        playBtn.disabled = true;
+        setGradesEnabled(false);
+        return;
+      }
       const item = deck[state.index];
       if (!item) {
         showFinished();
@@ -139,10 +144,12 @@
       }
       ruText.textContent = item.ru;
       srText.textContent = item.sr;
-      sceneLabel.textContent = 'A1 • Сцена 01';
+      sceneLabel.textContent = `A1 вЂў ${SCENE_TITLE}`;
       cardCounter.textContent = `${state.index + 1}/${deck.length}`;
       srText.classList.toggle('hidden', !state.revealed);
-      revealBtn.textContent = state.revealed ? 'Скрыть ответ' : 'Показать ответ';
+      revealBtn.textContent = state.revealed ? 'РЎРєСЂС‹С‚СЊ РѕС‚РІРµС‚' : 'РџРѕРєР°Р·Р°С‚СЊ РѕС‚РІРµС‚';
+      state.audioUrl = resolveAudioUrl(item);
+      playBtn.disabled = !state.audioUrl;
       setGradesEnabled(state.revealed);
       saveState();
     }
@@ -166,44 +173,18 @@
       if (!state.started) {
         return;
       }
-      if (!HAS_REAL_AUDIO) {
-        const original = playBtn.textContent;
-        playBtn.textContent = 'Аудио скоро';
-        setTimeout(() => {
-          playBtn.textContent = original;
-        }, 900);
+      if (!state.audioUrl) {
         return;
       }
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
       }
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) {
-          return;
-        }
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 520;
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.03);
-        gain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.65);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.7);
-        osc.onended = () => {
-          try {
-            ctx.close();
-          } catch (err) {
-            // ignore
-          }
-        };
-      } catch (err) {
+      audioPlayer.pause();
+      audioPlayer.src = state.audioUrl;
+      audioPlayer.currentTime = 0;
+      audioPlayer.play().catch(() => {
         // ignore
-      }
+      });
     }
 
     function startSession(reset) {
@@ -304,22 +285,63 @@
       }
     }
 
+    function resolveAudioUrl(item) {
+      if (!AUDIO_BASE || !item || !item.audio) {
+        return '';
+      }
+      return `${AUDIO_BASE}/${item.audio}`;
+    }
+
+    async function loadDeck() {
+      try {
+        const res = await fetch(DATA_URL);
+        if (!res.ok) {
+          throw new Error(`deck load failed: ${res.status}`);
+        }
+        const data = await res.json();
+        deck = data
+          .map((item) => ({
+            id: item.id,
+            ru: item.ru_text,
+            sr: item.sr_text,
+            audio: item.audio_sr_file,
+          }))
+          .filter((item) => item.ru && item.sr)
+          .slice(0, 100);
+        state.deckReady = deck.length > 0;
+      } catch (err) {
+        deck = [];
+        state.deckReady = false;
+      }
+      if (state.index >= deck.length) {
+        state.index = 0;
+      }
+      if (state.accessOk && state.deckReady) {
+        startBtn.disabled = false;
+      }
+      renderCard();
+    }
+
     loadState();
+    loadDeck();
 
     if (!initData) {
-      setAccess(false, 'Откройте Mini App через кнопку меню в Telegram');
+      setAccess(false, 'РћС‚РєСЂРѕР№С‚Рµ Mini App С‡РµСЂРµР· РєРЅРѕРїРєСѓ РјРµРЅСЋ РІ Telegram');
     } else {
       fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
           if (!r.ok || !data || !data.ok) {
-            const reason = data && data.detail ? data.detail : 'Доступ не подтверждён';
+            const reason = data && data.detail ? data.detail : 'Р”РѕСЃС‚СѓРї РЅРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ';
             throw new Error(reason);
           }
           setAccess(true);
+          if (state.deckReady) {
+            startBtn.disabled = false;
+          }
         })
         .catch((err) => {
-          setAccess(false, `Доступ не подтверждён: ${err.message}`);
+          setAccess(false, `Р”РѕСЃС‚СѓРї РЅРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ: ${err.message}`);
         });
     }
   </script>
