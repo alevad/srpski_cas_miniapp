@@ -55,9 +55,9 @@ body {
 }
 
 .brand-logo {
-  height: 48px;
+  height: 40px;
   width: auto;
-  margin-top: 12px;
+  margin-top: 10px;
   display: block;
 }
 
@@ -66,7 +66,7 @@ body {
   border-radius: 14px;
   background: var(--surface-strong);
   border: 1px solid var(--border);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   display: flex;
   justify-content: space-between;
@@ -104,7 +104,7 @@ body {
 }
 
 .phrase {
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.4;
   margin-bottom: 18px;
   text-align: center;
@@ -112,7 +112,7 @@ body {
 
 .answer {
   margin-top: 14px;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--accent);
   text-align: center;
 }
@@ -160,7 +160,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .grade {
@@ -213,12 +213,12 @@ body {
   }
 
   .progress {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .phrase,
   .answer {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .grades {
