@@ -11,54 +11,33 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div class="bg" aria-hidden="true">
-    <span class="orb orb-1"></span>
-    <span class="orb orb-2"></span>
-    <span class="orb orb-3"></span>
-    <span class="grid"></span>
-  </div>
-
   <main class="app">
-    <header class="app-head">
-      <div class="brand">
-        <span class="brand-mark">SC</span>
-        <div class="brand-text">
-          <span class="brand-title">Srpski_Cas</span>
-          <span class="brand-sub">Mini App</span>
-        </div>
+    <header class="app-bar">
+      <div class="app-brand">
+        <div class="app-title">Srpski_Cas</div>
+        <div class="app-sub">Mini App</div>
       </div>
-      <div class="status-pill" id="status">Проверяем доступ…</div>
+      <div class="app-progress">
+        <span id="sceneLabel">A1 • Сцена 01</span>
+        <span id="cardCounter">1/6</span>
+      </div>
     </header>
+
+    <div class="status" id="status">Проверяем доступ…</div>
 
     <section class="panel" id="gate">
       <h1>Тренажёр живой речи</h1>
-      <p class="lead">Слушай → повторяй → оценивай. Начнём с короткой A1‑сессии.</p>
-      <div class="panel-actions">
-        <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
-        <button class="btn ghost" id="howBtn" type="button">Как это работает</button>
-      </div>
+      <p class="lead">Слушай → повторяй → оценивай. Короткая A1‑сессия.</p>
+      <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
       <div class="hint" id="startHint">Нажмите Start, чтобы разрешить автозвук.</div>
     </section>
 
     <section class="panel hidden" id="trainer">
-      <div class="card">
-        <div class="card-top">
-          <span class="tag" id="sceneLabel">A1 • Сцена 01</span>
-          <span class="counter" id="cardCounter">1/6</span>
-        </div>
-        <div class="phrase" id="ruText"></div>
-        <button class="btn ghost" id="revealBtn" type="button">Показать ответ</button>
-        <div class="answer hidden" id="srText"></div>
-      </div>
-
-      <div class="audio">
-        <button class="btn icon" id="prevBtn" type="button" aria-label="Предыдущая фраза">⟵</button>
-        <button class="btn icon" id="playBtn" type="button" aria-label="Проиграть">▶</button>
-        <button class="btn icon" id="nextBtn" type="button" aria-label="Следующая фраза">⟶</button>
-        <div class="audio-note" id="audioNote">Демо‑аудио</div>
-      </div>
-
-      <div class="grades">
+      <div class="phrase" id="ruText"></div>
+      <button class="btn play" id="playBtn" type="button">▶ Слушать</button>
+      <button class="btn ghost" id="revealBtn" type="button">Показать ответ</button>
+      <div class="answer hidden" id="srText"></div>
+      <div class="grades hidden" id="grades">
         <button class="grade hard" data-grade="hard" type="button">Тяжело</button>
         <button class="grade good" data-grade="good" type="button">Хорошо</button>
         <button class="grade easy" data-grade="easy" type="button">Легко</button>
@@ -73,11 +52,8 @@
 
     <section class="panel hidden" id="finished">
       <h2>Сессия завершена</h2>
-      <p class="lead">Вы прошли демо‑сет из <span id="doneCount">0</span> фраз.</p>
-      <div class="panel-actions">
-        <button class="btn primary" id="restartBtn" type="button">Ещё раз</button>
-        <button class="btn ghost" id="backBtn" type="button">В меню</button>
-      </div>
+      <p class="lead">Вы прошли <span id="doneCount">0</span> фраз.</p>
+      <button class="btn primary" id="restartBtn" type="button">Ещё раз</button>
     </section>
   </main>
 
@@ -89,20 +65,17 @@
     const blocked = document.getElementById('blocked');
     const finished = document.getElementById('finished');
     const startBtn = document.getElementById('startBtn');
-    const howBtn = document.getElementById('howBtn');
     const startHint = document.getElementById('startHint');
     const openBotBtn = document.getElementById('openBotBtn');
     const restartBtn = document.getElementById('restartBtn');
-    const backBtn = document.getElementById('backBtn');
     const revealBtn = document.getElementById('revealBtn');
     const ruText = document.getElementById('ruText');
     const srText = document.getElementById('srText');
     const cardCounter = document.getElementById('cardCounter');
     const sceneLabel = document.getElementById('sceneLabel');
     const playBtn = document.getElementById('playBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
     const doneCount = document.getElementById('doneCount');
+    const grades = document.getElementById('grades');
     const gradeButtons = Array.from(document.querySelectorAll('.grade'));
 
     const tg = window.Telegram && window.Telegram.WebApp;
@@ -157,6 +130,7 @@
       gradeButtons.forEach((btn) => {
         btn.disabled = !enabled;
       });
+      grades.classList.toggle('hidden', !enabled);
     }
 
     function renderCard() {
@@ -180,8 +154,8 @@
       show(finished);
     }
 
-    function advanceCard(delta) {
-      const nextIndex = Math.min(Math.max(state.index + delta, 0), deck.length);
+    function advanceCard() {
+      const nextIndex = Math.min(state.index + 1, deck.length);
       state.index = nextIndex;
       state.revealed = false;
       renderCard();
@@ -236,10 +210,6 @@
       startSession();
     });
 
-    howBtn.addEventListener('click', () => {
-      startHint.textContent = 'Сначала слушайте, затем открывайте ответ и оценивайте сложность.';
-    });
-
     revealBtn.addEventListener('click', () => {
       state.revealed = !state.revealed;
       renderCard();
@@ -250,16 +220,8 @@
         if (!state.revealed) {
           return;
         }
-        advanceCard(1);
+        advanceCard();
       });
-    });
-
-    prevBtn.addEventListener('click', () => {
-      advanceCard(-1);
-    });
-
-    nextBtn.addEventListener('click', () => {
-      advanceCard(1);
     });
 
     playBtn.addEventListener('click', () => {
@@ -268,11 +230,6 @@
 
     restartBtn.addEventListener('click', () => {
       startSession();
-    });
-
-    backBtn.addEventListener('click', () => {
-      hide(finished);
-      show(gate);
     });
 
     openBotBtn.addEventListener('click', () => {
