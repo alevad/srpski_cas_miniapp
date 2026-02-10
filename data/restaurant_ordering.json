@@ -1,8 +1,8 @@
 [
   {
     "id": "A1_restaurant_ordering_001",
-    "ru_text": "...Где меню?!",
-    "sr_text": "...Gde je, meni?!",
+    "ru_text": "Где меню?",
+    "sr_text": "Gde je meni?",
     "audio_sr_file": "A1_restaurant_ordering_001_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_001_ru.mp3"
   },
@@ -15,15 +15,15 @@
   },
   {
     "id": "A1_restaurant_ordering_003",
-    "ru_text": "Сколько стоит кофе?!",
+    "ru_text": "Сколько стоит кофе?",
     "sr_text": "Koliko košta kafa?",
     "audio_sr_file": "A1_restaurant_ordering_003_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_003_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_004",
-    "ru_text": "Пожалуйста - воду.",
-    "sr_text": "Molim Vas - vodu.",
+    "ru_text": "Пожалуйста, воду.",
+    "sr_text": "Molim Vas, vodu.",
     "audio_sr_file": "A1_restaurant_ordering_004_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_004_ru.mp3"
   },
@@ -36,78 +36,78 @@
   },
   {
     "id": "A1_restaurant_ordering_006",
-    "ru_text": "Я хочу - апельсиновый сок.",
+    "ru_text": "Я хочу апельсиновый сок.",
     "sr_text": "Želim sok od pomorandže.",
     "audio_sr_file": "A1_restaurant_ordering_006_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_006_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_007",
-    "ru_text": "ВОт ваш сок",
-    "sr_text": "Izvolite, vaš sok.",
+    "ru_text": "Вот ваш сок.",
+    "sr_text": "Izvolite vaš sok.",
     "audio_sr_file": "A1_restaurant_ordering_007_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_007_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_008",
     "ru_text": "Спасибо большое.",
-    "sr_text": "HvAlA - puno.",
+    "sr_text": "Hvala puno.",
     "audio_sr_file": "A1_restaurant_ordering_008_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_008_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_009",
-    "ru_text": "У вас Есть суп?",
+    "ru_text": "У вас есть суп?",
     "sr_text": "Imate li supu?",
     "audio_sr_file": "A1_restaurant_ordering_009_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_009_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_010",
-    "ru_text": "Да. Есть куриный суп",
-    "sr_text": "Da. Imamo pileću suupu",
+    "ru_text": "Да, есть куриный суп.",
+    "sr_text": "Da, imamo pileću supu.",
     "audio_sr_file": "A1_restaurant_ordering_010_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_010_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_011",
-    "ru_text": "Вы готОвы заказать?",
-    "sr_text": "Da li ste spremni da naruučite?",
+    "ru_text": "Вы готовы заказать?",
+    "sr_text": "Da li ste spremni da naručite?",
     "audio_sr_file": "A1_restaurant_ordering_011_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_011_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_012",
-    "ru_text": "Да. мне - одну пиццу",
-    "sr_text": "Da. Meni jednu picu",
+    "ru_text": "Да. Мне одну пиццу.",
+    "sr_text": "Da. Meni jednu picu.",
     "audio_sr_file": "A1_restaurant_ordering_012_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_012_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_013",
     "ru_text": "Это всё?",
-    "sr_text": "Da li je tO sve???",
+    "sr_text": "Da li je to sve?",
     "audio_sr_file": "A1_restaurant_ordering_013_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_013_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_014",
-    "ru_text": "Да. это всё.",
+    "ru_text": "Да, это всё.",
     "sr_text": "Da, to je sve.",
     "audio_sr_file": "A1_restaurant_ordering_014_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_014_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_015",
-    "ru_text": "Один салат - пожАлуйста",
-    "sr_text": "Jednu salAtu... moolim.",
+    "ru_text": "Один салат, пожалуйста.",
+    "sr_text": "Jednu salatu, molim.",
     "audio_sr_file": "A1_restaurant_ordering_015_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_015_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_016",
-    "ru_text": "Где  туалет???",
-    "sr_text": "Gde je... toalet?",
+    "ru_text": "Где туалет?",
+    "sr_text": "Gde je toalet?",
     "audio_sr_file": "A1_restaurant_ordering_016_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_016_ru.mp3"
   },
@@ -120,36 +120,36 @@
   },
   {
     "id": "A1_restaurant_ordering_018",
-    "ru_text": "Можно счёт?; пожалуйста",
-    "sr_text": "Mogu li dobiti račun; molim Vas?",
+    "ru_text": "Можно счет, пожалуйста?",
+    "sr_text": "Mogu li dobiti račun, molim Vas?",
     "audio_sr_file": "A1_restaurant_ordering_018_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_018_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_019",
-    "ru_text": "Конечно. Вы оплАтите кАртой?",
+    "ru_text": "Конечно. Платите картой?",
     "sr_text": "Naravno. Plaćate li karticom?",
     "audio_sr_file": "A1_restaurant_ordering_019_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_019_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_020",
-    "ru_text": "Нет: наличными",
-    "sr_text": "Ne: gotovinom.",
+    "ru_text": "Нет, наличными.",
+    "sr_text": "Ne, gotovinom.",
     "audio_sr_file": "A1_restaurant_ordering_020_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_020_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_021",
-    "ru_text": "Ещё одно пИво.",
-    "sr_text": "Još jedno pIvo",
+    "ru_text": "Ещё одно пиво.",
+    "sr_text": "Još jedno pivo.",
     "audio_sr_file": "A1_restaurant_ordering_021_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_021_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_022",
-    "ru_text": "Хлеб бесплАтный?",
-    "sr_text": "Da li je hleb besplAtan...??!",
+    "ru_text": "Хлеб бесплатный?",
+    "sr_text": "Da li je hleb besplatan?",
     "audio_sr_file": "A1_restaurant_ordering_022_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_022_ru.mp3"
   },
@@ -162,8 +162,8 @@
   },
   {
     "id": "A1_restaurant_ordering_024",
-    "ru_text": "Спасибо. И вам.",
-    "sr_text": "Hvala. takođe.",
+    "ru_text": "Спасибо, и вам.",
+    "sr_text": "Hvala, takođe.",
     "audio_sr_file": "A1_restaurant_ordering_024_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_024_ru.mp3"
   },
@@ -176,7 +176,7 @@
   },
   {
     "id": "A1_restaurant_ordering_026",
-    "ru_text": "Это местный сыр",
+    "ru_text": "Это местный сыр.",
     "sr_text": "To je lokalni sir.",
     "audio_sr_file": "A1_restaurant_ordering_026_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_026_ru.mp3"
@@ -184,28 +184,28 @@
   {
     "id": "A1_restaurant_ordering_027",
     "ru_text": "Это очень вкусно.",
-    "sr_text": "Ovo je VEOma ukusno.",
+    "sr_text": "Ovo je veoma ukusno.",
     "audio_sr_file": "A1_restaurant_ordering_027_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_027_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_028",
-    "ru_text": "Есть свобОдный стОлик?",
-    "sr_text": "Imate li sLObodan sto?",
+    "ru_text": "Есть свободный столик?",
+    "sr_text": "Imate li slobodan sto?",
     "audio_sr_file": "A1_restaurant_ordering_028_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_028_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_029",
-    "ru_text": "Добрый вечер. Столик - на двоИх?",
-    "sr_text": "Dobro veče. Sto - za dvOje??",
+    "ru_text": "Добрый вечер. Столик на двоих?",
+    "sr_text": "Dobro veče. Sto za dvoje?",
     "audio_sr_file": "A1_restaurant_ordering_029_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_029_ru.mp3"
   },
   {
     "id": "A1_restaurant_ordering_030",
-    "ru_text": "Да; На двоИх;пожалуйста.",
-    "sr_text": "Da; Za dvoje molim.",
+    "ru_text": "Да, на двоих, пожалуйста.",
+    "sr_text": "Da, za dvoje, molim.",
     "audio_sr_file": "A1_restaurant_ordering_030_sr.mp3",
     "audio_ru_file": "A1_restaurant_ordering_030_ru.mp3"
   }
