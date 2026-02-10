@@ -18,15 +18,13 @@
     <header class="app-bar">
       <div class="app-brand">
         <div class="app-title">Srpski_Cas</div>
-        <div class="app-sub">Mini App</div>
-      </div>
-      <div class="app-progress">
-        <span id="sceneLabel">A1 • Сцена 01</span>
-        <span id="cardCounter">1/6</span>
       </div>
     </header>
 
-    <div class="status" id="status">Проверяем доступ…</div>
+    <div class="progress" id="progress">
+      <span id="sceneLabel">A1 • Сцена 01</span>
+      <span id="cardCounter">1/6</span>
+    </div>
 
     <section class="panel" id="gate">
       <h1>Тренажёр живой речи</h1>
@@ -62,7 +60,6 @@
 
   <script>
     const API_BASE = 'https://api.intelahost.org';
-    const statusEl = document.getElementById('status');
     const gate = document.getElementById('gate');
     const trainer = document.getElementById('trainer');
     const blocked = document.getElementById('blocked');
@@ -82,6 +79,7 @@
     const gradeButtons = Array.from(document.querySelectorAll('.grade'));
 
     const tg = window.Telegram && window.Telegram.WebApp;
+    const STORAGE_KEY = 'sc_miniapp_state_v1';
 
     const deck = [
       { ru: 'Привет! Как дела?', sr: 'Zdravo! Kako si?' },
@@ -107,15 +105,8 @@
       el.classList.add('hidden');
     }
 
-    function setStatus(text) {
-      statusEl.textContent = text;
-    }
-
     function setAccess(ok, message) {
       state.accessOk = ok;
-      if (message) {
-        setStatus(message);
-      }
       if (ok) {
         startBtn.disabled = false;
         show(gate);
@@ -126,6 +117,9 @@
         hide(finished);
         hide(gate);
         show(blocked);
+      }
+      if (message && !ok) {
+        startHint.textContent = message;
       }
     }
 
@@ -149,12 +143,14 @@
       srText.classList.toggle('hidden', !state.revealed);
       revealBtn.textContent = state.revealed ? 'Скрыть ответ' : 'Показать ответ';
       setGradesEnabled(state.revealed);
+      saveState();
     }
 
     function showFinished() {
       doneCount.textContent = `${deck.length}`;
       hide(trainer);
       show(finished);
+      saveState();
     }
 
     function advanceCard() {
@@ -182,22 +178,37 @@
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.value = 520;
-        gain.gain.value = 0.05;
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.03);
+        gain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.65);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.18);
+        osc.stop(ctx.currentTime + 0.7);
+        osc.onended = () => {
+          try {
+            ctx.close();
+          } catch (err) {
+            // ignore
+          }
+        };
       } catch (err) {
         // ignore
       }
     }
 
-    function startSession() {
+    function startSession(reset) {
       state.started = true;
-      state.index = 0;
+      if (reset) {
+        state.index = 0;
+      }
       state.revealed = false;
       hide(gate);
       hide(finished);
+      if (state.index >= deck.length) {
+        showFinished();
+        return;
+      }
       show(trainer);
       renderCard();
       playAudio();
@@ -210,7 +221,7 @@
       if (tg && tg.ready) {
         tg.ready();
       }
-      startSession();
+      startSession(false);
     });
 
     revealBtn.addEventListener('click', () => {
@@ -232,7 +243,7 @@
     });
 
     restartBtn.addEventListener('click', () => {
-      startSession();
+      startSession(true);
     });
 
     openBotBtn.addEventListener('click', () => {
@@ -261,10 +272,34 @@
       tg.ready();
     }
 
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          return;
+        }
+        const saved = JSON.parse(raw);
+        if (Number.isInteger(saved.index)) {
+          state.index = Math.min(Math.max(saved.index, 0), deck.length);
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ index: state.index }));
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    loadState();
+
     if (!initData) {
       setAccess(false, 'Откройте Mini App через кнопку меню в Telegram');
     } else {
-      setStatus('Проверяем доступ…');
       fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
@@ -272,7 +307,7 @@
             const reason = data && data.detail ? data.detail : 'Доступ не подтверждён';
             throw new Error(reason);
           }
-          setAccess(true, 'Доступ подтверждён');
+          setAccess(true);
         })
         .catch((err) => {
           setAccess(false, `Доступ не подтверждён: ${err.message}`);
