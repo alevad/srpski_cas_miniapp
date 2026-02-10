@@ -15,12 +15,17 @@
       <div class="label">Статус</div>
       <div id="status">Ожидание запуска в Telegram…</div>
     </div>
+    <details class="card">
+      <summary class="label">Диагностика</summary>
+      <pre id="debug">Ожидание…</pre>
+    </details>
     <a class="btn" href="https://t.me/SrpskiCas_bot">Открыть бота</a>
   </main>
 
   <script>
     const API_BASE = 'https://api.intelahost.org';
     const status = document.getElementById('status');
+    const debug = document.getElementById('debug');
     const tg = window.Telegram && window.Telegram.WebApp;
 
     function getInitData() {
@@ -34,7 +39,30 @@
       return raw ? decodeURIComponent(raw) : '';
     }
 
+    function setDebug(info) {
+      debug.textContent = JSON.stringify(info, null, 2);
+    }
+
     const initData = getInitData();
+    const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+    const search = window.location.search.startsWith('?') ? window.location.search.slice(1) : '';
+    const params = new URLSearchParams(hash || search);
+    const tgWebAppDataRaw = params.get('tgWebAppData') || '';
+    const initDataPreview = initData
+      ? `${initData.slice(0, 16)}...${initData.slice(-8)}`
+      : '';
+
+    setDebug({
+      href: window.location.href,
+      hasTelegram: Boolean(window.Telegram),
+      hasWebApp: Boolean(tg),
+      tgInitDataLen: tg && tg.initData ? tg.initData.length : 0,
+      tgWebAppDataLen: tgWebAppDataRaw.length,
+      initDataLen: initData.length,
+      initDataPreview,
+      platform: tg ? tg.platform : '',
+      version: tg ? tg.version : '',
+    });
 
     if (tg) {
       tg.ready();
