@@ -15,7 +15,7 @@
       <div class="label">Статус</div>
       <div id="status">Ожидание запуска в Telegram…</div>
     </div>
-    <a class="btn" href="https://t.me/SrpskiCas_bot">Открыть бота</a>
+    <div class="note">Открывайте Mini App через кнопку «🎧 Тренироваться» в чате бота.</div>
   </main>
 
   <script>
@@ -42,7 +42,7 @@
     } else if (initData) {
       status.textContent = 'Mini App открыт через Telegram (initData из URL)';
     } else {
-      status.textContent = 'Откройте страницу из Telegram WebApp';
+      status.textContent = 'Откройте страницу через кнопку «🎧 Тренироваться» в чате бота';
     }
 
     if (initData) {
