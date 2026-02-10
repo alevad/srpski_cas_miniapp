@@ -1,27 +1,288 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Srpski_Cas Mini App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+  <div class="bg" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+    <span class="grid"></span>
+  </div>
+
   <main class="app">
-    <h1>Srpski_Cas Mini App</h1>
-    <p>Минимальная стартовая страница для Mini App.</p>
-    <div class="card">
-      <div class="label">Статус</div>
-      <div id="status">Ожидание запуска в Telegram…</div>
-    </div>
-    <div class="note">Открывайте Mini App через кнопку «🎧 Тренироваться» в чате бота.</div>
+    <header class="app-head">
+      <div class="brand">
+        <span class="brand-mark">SC</span>
+        <div class="brand-text">
+          <span class="brand-title">Srpski_Cas</span>
+          <span class="brand-sub">Mini App</span>
+        </div>
+      </div>
+      <div class="status-pill" id="status">Проверяем доступ…</div>
+    </header>
+
+    <section class="panel" id="gate">
+      <h1>Тренажёр живой речи</h1>
+      <p class="lead">Слушай → повторяй → оценивай. Начнём с короткой A1‑сессии.</p>
+      <div class="panel-actions">
+        <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
+        <button class="btn ghost" id="howBtn" type="button">Как это работает</button>
+      </div>
+      <div class="hint" id="startHint">Нажмите Start, чтобы разрешить автозвук.</div>
+    </section>
+
+    <section class="panel hidden" id="trainer">
+      <div class="card">
+        <div class="card-top">
+          <span class="tag" id="sceneLabel">A1 • Сцена 01</span>
+          <span class="counter" id="cardCounter">1/6</span>
+        </div>
+        <div class="phrase" id="ruText"></div>
+        <button class="btn ghost" id="revealBtn" type="button">Показать ответ</button>
+        <div class="answer hidden" id="srText"></div>
+      </div>
+
+      <div class="audio">
+        <button class="btn icon" id="prevBtn" type="button" aria-label="Предыдущая фраза">⟵</button>
+        <button class="btn icon" id="playBtn" type="button" aria-label="Проиграть">▶</button>
+        <button class="btn icon" id="nextBtn" type="button" aria-label="Следующая фраза">⟶</button>
+        <div class="audio-note" id="audioNote">Демо‑аудио</div>
+      </div>
+
+      <div class="grades">
+        <button class="grade hard" data-grade="hard" type="button">Тяжело</button>
+        <button class="grade good" data-grade="good" type="button">Хорошо</button>
+        <button class="grade easy" data-grade="easy" type="button">Легко</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="blocked">
+      <h2>Доступ не подтверждён</h2>
+      <p class="lead">Откройте Mini App через кнопку меню в чате бота.</p>
+      <button class="btn primary" id="openBotBtn" type="button">Открыть бота</button>
+    </section>
+
+    <section class="panel hidden" id="finished">
+      <h2>Сессия завершена</h2>
+      <p class="lead">Вы прошли демо‑сет из <span id="doneCount">0</span> фраз.</p>
+      <div class="panel-actions">
+        <button class="btn primary" id="restartBtn" type="button">Ещё раз</button>
+        <button class="btn ghost" id="backBtn" type="button">В меню</button>
+      </div>
+    </section>
   </main>
 
   <script>
     const API_BASE = 'https://api.intelahost.org';
-    const status = document.getElementById('status');
+    const statusEl = document.getElementById('status');
+    const gate = document.getElementById('gate');
+    const trainer = document.getElementById('trainer');
+    const blocked = document.getElementById('blocked');
+    const finished = document.getElementById('finished');
+    const startBtn = document.getElementById('startBtn');
+    const howBtn = document.getElementById('howBtn');
+    const startHint = document.getElementById('startHint');
+    const openBotBtn = document.getElementById('openBotBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const backBtn = document.getElementById('backBtn');
+    const revealBtn = document.getElementById('revealBtn');
+    const ruText = document.getElementById('ruText');
+    const srText = document.getElementById('srText');
+    const cardCounter = document.getElementById('cardCounter');
+    const sceneLabel = document.getElementById('sceneLabel');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const doneCount = document.getElementById('doneCount');
+    const gradeButtons = Array.from(document.querySelectorAll('.grade'));
+
     const tg = window.Telegram && window.Telegram.WebApp;
+
+    const deck = [
+      { ru: 'Привет! Как дела?', sr: 'Zdravo! Kako si?' },
+      { ru: 'Я из России.', sr: 'Ja sam iz Rusije.' },
+      { ru: 'Где находится вокзал?', sr: 'Gde je železnička stanica?' },
+      { ru: 'Мне нужна помощь.', sr: 'Treba mi pomoć.' },
+      { ru: 'Сколько это стоит?', sr: 'Koliko to košta?' },
+      { ru: 'Спасибо! Пока.', sr: 'Hvala! Ćao.' },
+    ];
+
+    const state = {
+      accessOk: false,
+      index: 0,
+      revealed: false,
+      started: false,
+    };
+
+    function show(el) {
+      el.classList.remove('hidden');
+    }
+
+    function hide(el) {
+      el.classList.add('hidden');
+    }
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function setAccess(ok, message) {
+      state.accessOk = ok;
+      if (message) {
+        setStatus(message);
+      }
+      if (ok) {
+        startBtn.disabled = false;
+        show(gate);
+        hide(blocked);
+      } else {
+        startBtn.disabled = true;
+        hide(trainer);
+        hide(finished);
+        hide(gate);
+        show(blocked);
+      }
+    }
+
+    function setGradesEnabled(enabled) {
+      gradeButtons.forEach((btn) => {
+        btn.disabled = !enabled;
+      });
+    }
+
+    function renderCard() {
+      const item = deck[state.index];
+      if (!item) {
+        showFinished();
+        return;
+      }
+      ruText.textContent = item.ru;
+      srText.textContent = item.sr;
+      sceneLabel.textContent = 'A1 • Сцена 01';
+      cardCounter.textContent = `${state.index + 1}/${deck.length}`;
+      srText.classList.toggle('hidden', !state.revealed);
+      revealBtn.textContent = state.revealed ? 'Скрыть ответ' : 'Показать ответ';
+      setGradesEnabled(state.revealed);
+    }
+
+    function showFinished() {
+      doneCount.textContent = `${deck.length}`;
+      hide(trainer);
+      show(finished);
+    }
+
+    function advanceCard(delta) {
+      const nextIndex = Math.min(Math.max(state.index + delta, 0), deck.length);
+      state.index = nextIndex;
+      state.revealed = false;
+      renderCard();
+      playAudio();
+    }
+
+    function playAudio() {
+      if (!state.started) {
+        return;
+      }
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) {
+          return;
+        }
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 520;
+        gain.gain.value = 0.05;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    function startSession() {
+      state.started = true;
+      state.index = 0;
+      state.revealed = false;
+      hide(gate);
+      hide(finished);
+      show(trainer);
+      renderCard();
+      playAudio();
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (!state.accessOk) {
+        return;
+      }
+      if (tg && tg.ready) {
+        tg.ready();
+      }
+      startSession();
+    });
+
+    howBtn.addEventListener('click', () => {
+      startHint.textContent = 'Сначала слушайте, затем открывайте ответ и оценивайте сложность.';
+    });
+
+    revealBtn.addEventListener('click', () => {
+      state.revealed = !state.revealed;
+      renderCard();
+    });
+
+    gradeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!state.revealed) {
+          return;
+        }
+        advanceCard(1);
+      });
+    });
+
+    prevBtn.addEventListener('click', () => {
+      advanceCard(-1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      advanceCard(1);
+    });
+
+    playBtn.addEventListener('click', () => {
+      playAudio();
+    });
+
+    restartBtn.addEventListener('click', () => {
+      startSession();
+    });
+
+    backBtn.addEventListener('click', () => {
+      hide(finished);
+      show(gate);
+    });
+
+    openBotBtn.addEventListener('click', () => {
+      const url = 'https://t.me/SrpskiCas_bot';
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(url);
+      } else {
+        window.location.href = url;
+      }
+    });
 
     function getInitData() {
       if (tg && tg.initData) {
@@ -36,30 +297,26 @@
 
     const initData = getInitData();
 
-    if (tg) {
+    if (tg && tg.ready) {
       tg.ready();
-      status.textContent = 'Mini App открыт через Telegram WebApp';
-    } else if (initData) {
-      status.textContent = 'Mini App открыт через Telegram (initData из URL)';
-    } else {
-      status.textContent = 'Откройте страницу через кнопку «🎧 Тренироваться» в чате бота';
     }
 
-    if (initData) {
+    if (!initData) {
+      setAccess(false, 'Откройте Mini App через кнопку меню в Telegram');
+    } else {
+      setStatus('Проверяем доступ…');
       fetch(`${API_BASE}/access?initData=${encodeURIComponent(initData)}`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (data && data.ok) {
-            status.textContent = 'Доступ подтверждён';
-          } else {
-            status.textContent = `Ответ backend: ${JSON.stringify(data)}`;
+        .then(async (r) => {
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok || !data || !data.ok) {
+            const reason = data && data.detail ? data.detail : 'Доступ не подтверждён';
+            throw new Error(reason);
           }
+          setAccess(true, 'Доступ подтверждён');
         })
         .catch((err) => {
-          status.textContent = `Ошибка запроса: ${err}`;
+          setAccess(false, `Доступ не подтверждён: ${err.message}`);
         });
-    } else if (tg) {
-      status.textContent = 'initData отсутствует (открыто не из WebApp)';
     }
   </script>
 </body>
