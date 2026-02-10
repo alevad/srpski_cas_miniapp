@@ -52,10 +52,10 @@ body {
   gap: 16px;
 }
 
-.app-title {
-  font-family: "Unbounded", "Manrope", sans-serif;
-  font-size: 18px;
-  letter-spacing: 0.02em;
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  display: block;
 }
 
 .progress {
@@ -63,8 +63,8 @@ body {
   border-radius: 14px;
   background: var(--surface-strong);
   border: 1px solid var(--border);
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -100,7 +100,7 @@ body {
 }
 
 .phrase {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.4;
   margin-bottom: 18px;
   text-align: center;

@@ -10,14 +10,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260210-5" />
+  <link rel="stylesheet" href="styles.css?v=20260210-6" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <main class="app">
     <header class="app-bar">
       <div class="app-brand">
-        <div class="app-title">Srpski_Cas</div>
+        <img class="brand-logo" src="assets/logo.png" alt="Srpski_Cas" />
       </div>
     </header>
 
@@ -80,6 +80,7 @@
 
     const tg = window.Telegram && window.Telegram.WebApp;
     const STORAGE_KEY = 'sc_miniapp_state_v1';
+    const HAS_REAL_AUDIO = false;
 
     const deck = [
       { ru: 'Привет! Как дела?', sr: 'Zdravo! Kako si?' },
@@ -163,6 +164,14 @@
 
     function playAudio() {
       if (!state.started) {
+        return;
+      }
+      if (!HAS_REAL_AUDIO) {
+        const original = playBtn.textContent;
+        playBtn.textContent = 'Аудио скоро';
+        setTimeout(() => {
+          playBtn.textContent = original;
+        }, 900);
         return;
       }
       if (tg && tg.HapticFeedback) {
