@@ -90,9 +90,9 @@
 
     const tg = window.Telegram && window.Telegram.WebApp;
     const STORAGE_KEY = 'sc_miniapp_state_v1';
-    const DATA_URL = 'data/restaurant_ordering.json?v=20260210-3';
+    const DATA_URL = 'data/srpski_cas.json?v=20260211-2';
     const SCENE_TITLE = '\u0420\u0435\u0441\u0442\u043e\u0440\u0430\u043d';
-    const AUDIO_BASE = 'audio/restaurant_ordering';
+    const AUDIO_BASE = 'audio';
     const audioPlayer = new Audio();
     const BULLET = '\u2022';
 
@@ -195,8 +195,9 @@
         showFinished();
         return;
       }
-      ruText.textContent = item.ru;
-      srText.textContent = item.sr;
+      const isReverse = item.direction === 'reverse';
+      ruText.textContent = isReverse ? item.sr : item.ru;
+      srText.textContent = isReverse ? item.ru : item.sr;
       sceneLabel.textContent = `A1 ${BULLET} ${SCENE_TITLE}`;
       cardCounter.textContent = `${state.index + 1}/${deck.length}`;
       srText.classList.toggle('hidden', !state.revealed);
@@ -352,14 +353,20 @@
           throw new Error(`deck load failed: ${res.status}`);
         }
         const data = await res.json();
-        deck = data
-          .map((item) => ({
-            id: item.id,
-            ru: item.ru_text,
-            sr: item.sr_text,
-            audio: item.audio_sr_file,
-          }))
-          .filter((item) => item.ru && item.sr)
+        const items = Array.isArray(data) ? data : (data.cards || []);
+        deck = items
+          .map((item) => {
+            const tags = String(item.tags || '');
+            const direction = item.direction || (tags.includes('direction:reverse') ? 'reverse' : 'direct');
+            return {
+              id: item.card_id || item.id || '',
+              ru: item.ru_text || '',
+              sr: item.sr_text || '',
+              audio: item.audio_sr_file || item.audio || '',
+              direction,
+            };
+          })
+          .filter((item) => item.ru && item.sr && item.audio)
           .slice(0, 100);
         state.deckReady = deck.length > 0;
       } catch (err) {
