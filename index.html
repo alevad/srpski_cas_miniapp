@@ -238,7 +238,7 @@
       } else {
         revealBtn.textContent = isAudition ? ui.revealTextLabel : ui.revealLabel;
       }
-      state.audioUrl = resolveAudioUrl(item);
+      state.audioUrl = resolveAudioUrl(item, 'sr');
       playBtn.disabled = !state.audioUrl;
       const showGrades = state.revealed && (item.mode === 'srs' || item.mode === 'qa' || (item.mode === 'dialog' && item.dialogEnd));
       setGradesEnabled(showGrades);
@@ -260,11 +260,8 @@
       playAudio();
     }
 
-    function playAudio(force = false) {
+    function playAudio(force = false, lang = 'sr') {
       if (!state.started) {
-        return;
-      }
-      if (!state.audioUrl) {
         return;
       }
       const item = deck[state.index];
@@ -274,11 +271,15 @@
       if (!force && item.mode !== 'audition') {
         return;
       }
+      const url = resolveAudioUrl(item, lang);
+      if (!url) {
+        return;
+      }
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
       }
       audioPlayer.pause();
-      audioPlayer.src = state.audioUrl;
+      audioPlayer.src = url;
       audioPlayer.currentTime = 0;
       audioPlayer.play().catch(() => {
         // ignore
@@ -327,7 +328,8 @@
       state.revealed = !state.revealed;
       renderCard();
       if (item && state.revealed && item.mode === 'srs') {
-        playAudio(true);
+        const lang = item.direction === 'reverse' ? 'ru' : 'sr';
+        playAudio(true, lang);
       }
     });
 
@@ -397,11 +399,15 @@
       }
     }
 
-    function resolveAudioUrl(item) {
-      if (!AUDIO_BASE || !item || !item.audio) {
+    function resolveAudioUrl(item, lang) {
+      if (!AUDIO_BASE || !item) {
         return '';
       }
-      return `${AUDIO_BASE}/${item.audio}`;
+      const name = lang === 'ru' ? item.audioRu : item.audioSr;
+      if (!name) {
+        return '';
+      }
+      return `${AUDIO_BASE}/${name}`;
     }
 
     function extractLevel(cardId) {
@@ -541,7 +547,8 @@
               id: item.card_id || item.id || '',
               ru: item.ru_text || '',
               sr: item.sr_text || '',
-              audio: item.audio_sr_file || item.audio || '',
+              audioSr: item.audio_sr_file || item.audio || '',
+              audioRu: item.audio_ru_file || '',
               direction,
               kind: item.kind || '',
               dlgGroup: item.dlg_group_id || '',
@@ -549,7 +556,7 @@
               order: Number.isFinite(Number(item.order)) ? Number(item.order) : null,
             };
           })
-          .filter((item) => item.ru && item.sr && item.audio)
+          .filter((item) => item.ru && item.sr && item.audioSr)
           .slice(0, 200);
         deck = buildLesson(base);
         state.deckReady = deck.length > 0;
