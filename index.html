@@ -212,7 +212,7 @@
           ? 'Вопрос-ответ'
           : (item.mode === 'dialog'
             ? 'Диалог'
-            : 'SRS'));
+            : (isReverse ? 'SRS (обратный)' : 'SRS')));
       if (isAudition && !state.revealed) {
         ruText.textContent = ui.auditionHint;
         srText.textContent = '';
@@ -326,6 +326,9 @@
       }
       state.revealed = !state.revealed;
       renderCard();
+      if (item && state.revealed && item.mode === 'srs') {
+        playAudio(true);
+      }
     });
 
     gradeButtons.forEach((btn) => {
@@ -510,11 +513,16 @@
         }
       });
 
+      if (reversePool.length > 0 && srsReverseCount < 1) {
+        srsReverseCount = 1;
+      }
+
       const qa = hasQa ? qaGroup.map((c) => ({ ...c, mode: 'qa' })) : [];
       const dialog = hasDialog
         ? dialogGroup.map((c, idx) => ({ ...c, mode: 'dialog', dialogEnd: idx === dialogGroup.length - 1 }))
         : [];
-      return audition.concat(srsDirect, srsReverse, qa, dialog);
+      const srs = shuffle(srsDirect.concat(srsReverse));
+      return audition.concat(srs, qa, dialog);
     }
 
     async function loadDeck() {
