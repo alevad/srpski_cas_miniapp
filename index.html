@@ -260,11 +260,18 @@
       playAudio();
     }
 
-    function playAudio() {
+    function playAudio(force = false) {
       if (!state.started) {
         return;
       }
       if (!state.audioUrl) {
+        return;
+      }
+      const item = deck[state.index];
+      if (!item) {
+        return;
+      }
+      if (!force && item.mode !== 'audition') {
         return;
       }
       if (tg && tg.HapticFeedback) {
@@ -331,7 +338,7 @@
     });
 
     playBtn.addEventListener('click', () => {
-      playAudio();
+      playAudio(true);
     });
 
     restartBtn.addEventListener('click', () => {
