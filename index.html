@@ -22,8 +22,13 @@
     </header>
 
     <div class="progress" id="progress">
-      <span id="sceneLabel">A1</span>
-      <span id="cardCounter">0/0</span>
+      <div class="progress-row">
+        <span id="sceneLabel">A1</span>
+        <span id="cardCounter">0/0</span>
+      </div>
+      <div class="progress-row">
+        <span id="blockLabel">Аудирование</span>
+      </div>
     </div>
 
     <section class="panel" id="gate">
@@ -73,6 +78,7 @@
     const srText = document.getElementById('srText');
     const cardCounter = document.getElementById('cardCounter');
     const sceneLabel = document.getElementById('sceneLabel');
+    const blockLabel = document.getElementById('blockLabel');
     const playBtn = document.getElementById('playBtn');
     const doneCount = document.getElementById('doneCount');
     const grades = document.getElementById('grades');
@@ -200,6 +206,13 @@
       }
       const isReverse = item.direction === 'reverse';
       const isAudition = item.mode === 'audition';
+      const blockName = isAudition
+        ? 'Аудирование'
+        : (item.mode === 'qa'
+          ? 'Вопрос-ответ'
+          : (item.mode === 'dialog'
+            ? 'Диалог'
+            : 'SRS'));
       if (isAudition && !state.revealed) {
         ruText.textContent = ui.auditionHint;
         srText.textContent = '';
@@ -218,6 +231,7 @@
       }
       sceneLabel.textContent = `A1 ${BULLET} ${SCENE_TITLE}`;
       cardCounter.textContent = `${state.index + 1}/${deck.length}`;
+      blockLabel.textContent = blockName;
       srText.classList.toggle('hidden', !state.revealed);
       if (state.revealed) {
         revealBtn.textContent = isAudition ? ui.revealTextHideLabel : ui.revealHideLabel;
