@@ -219,7 +219,8 @@
       }
       state.audioUrl = resolveAudioUrl(item);
       playBtn.disabled = !state.audioUrl;
-      setGradesEnabled(state.revealed && !isAudition);
+      const showGrades = state.revealed && (item.mode === 'srs' || item.mode === 'qa' || (item.mode === 'dialog' && item.dialogEnd));
+      setGradesEnabled(showGrades);
       saveState();
     }
 
@@ -284,6 +285,17 @@
     });
 
     revealBtn.addEventListener('click', () => {
+      const item = deck[state.index];
+      if (item && state.revealed) {
+        if (item.mode === 'audition') {
+          advanceCard();
+          return;
+        }
+        if (item.mode === 'dialog' && !item.dialogEnd) {
+          advanceCard();
+          return;
+        }
+      }
       state.revealed = !state.revealed;
       renderCard();
     });
@@ -471,7 +483,9 @@
       });
 
       const qa = hasQa ? qaGroup.map((c) => ({ ...c, mode: 'qa' })) : [];
-      const dialog = hasDialog ? dialogGroup.map((c) => ({ ...c, mode: 'dialog' })) : [];
+      const dialog = hasDialog
+        ? dialogGroup.map((c, idx) => ({ ...c, mode: 'dialog', dialogEnd: idx === dialogGroup.length - 1 }))
+        : [];
       return audition.concat(srsDirect, srsReverse, qa, dialog);
     }
 
