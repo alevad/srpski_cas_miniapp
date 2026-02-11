@@ -204,8 +204,10 @@
         ruText.textContent = ui.auditionHint;
         srText.textContent = '';
       } else {
-        ruText.textContent = isReverse ? item.sr : item.ru;
-        srText.textContent = isReverse ? item.ru : item.sr;
+        const prompt = (item.mode === 'qa' || item.mode === 'dialog' || isReverse) ? item.sr : item.ru;
+        const answer = (item.mode === 'qa' || item.mode === 'dialog' || isReverse) ? item.ru : item.sr;
+        ruText.textContent = prompt;
+        srText.textContent = answer;
       }
       sceneLabel.textContent = `A1 ${BULLET} ${SCENE_TITLE}`;
       cardCounter.textContent = `${state.index + 1}/${deck.length}`;
@@ -374,6 +376,34 @@
       return out;
     }
 
+    function buildDialogGroups(cards) {
+      const groups = new Map();
+      cards.forEach((card) => {
+        if (card.kind !== 'dlg_line' || !card.dlgGroup) {
+          return;
+        }
+        if (!groups.has(card.dlgGroup)) {
+          groups.set(card.dlgGroup, []);
+        }
+        groups.get(card.dlgGroup).push(card);
+      });
+      const out = [];
+      groups.forEach((items) => {
+        const sorted = items.slice().sort((a, b) => {
+          const ao = Number.isFinite(a.order) ? a.order : 0;
+          const bo = Number.isFinite(b.order) ? b.order : 0;
+          if (ao !== bo) {
+            return ao - bo;
+          }
+          return String(a.id).localeCompare(String(b.id));
+        });
+        if (sorted.length >= 2) {
+          out.push(sorted);
+        }
+      });
+      return out;
+    }
+
     function buildLesson(cards) {
       if (!cards.length) {
         return [];
@@ -387,20 +417,28 @@
       }[level] || { minutes: 20, secPerCard: 35, aud: 0.40, srsDirect: 0.28, srsReverse: 0.07, qa: 0.15, dialog: 0.10 };
 
       const total = Math.max(1, Math.floor((cfg.minutes * 60) / cfg.secPerCard));
-      const directPool = cards.filter((c) => c.direction !== 'reverse');
-      const reversePool = cards.filter((c) => c.direction === 'reverse');
+      const singlePool = cards.filter((c) => c.kind !== 'dlg_line');
+      const directPool = singlePool.filter((c) => c.direction !== 'reverse');
+      const reversePool = singlePool.filter((c) => c.direction === 'reverse');
+      const dialogGroups = buildDialogGroups(cards);
+      const qaGroup = dialogGroups[0] || null;
+      const dialogGroup = dialogGroups.length > 1 ? dialogGroups[1] : null;
 
       let audCount = Math.round(total * cfg.aud);
       let srsDirectCount = Math.round(total * cfg.srsDirect);
       let srsReverseCount = Math.round(total * cfg.srsReverse);
-      const dialogAvailable = false;
 
-      if (!dialogAvailable) {
-        const freed = Math.round(total * (cfg.qa + cfg.dialog));
-        const addToAud = Math.round(freed * 0.4);
-        const addToSrs = Math.max(0, freed - addToAud);
-        audCount += addToAud;
-        srsDirectCount += addToSrs;
+      const hasQa = Boolean(qaGroup);
+      const hasDialog = Boolean(dialogGroup);
+      if (!hasQa || !hasDialog) {
+        const missingShare = (hasQa ? 0 : cfg.qa) + (hasDialog ? 0 : cfg.dialog);
+        if (missingShare > 0) {
+          const freed = Math.round(total * missingShare);
+          const addToAud = Math.round(freed * 0.4);
+          const addToSrs = Math.max(0, freed - addToAud);
+          audCount += addToAud;
+          srsDirectCount += addToSrs;
+        }
       }
 
       const used = new Set();
@@ -432,7 +470,9 @@
         }
       });
 
-      return audition.concat(srsDirect, srsReverse);
+      const qa = hasQa ? qaGroup.map((c) => ({ ...c, mode: 'qa' })) : [];
+      const dialog = hasDialog ? dialogGroup.map((c) => ({ ...c, mode: 'dialog' })) : [];
+      return audition.concat(srsDirect, srsReverse, qa, dialog);
     }
 
     async function loadDeck() {
@@ -453,6 +493,10 @@
               sr: item.sr_text || '',
               audio: item.audio_sr_file || item.audio || '',
               direction,
+              kind: item.kind || '',
+              dlgGroup: item.dlg_group_id || '',
+              dlgRole: item.dlg_role || '',
+              order: Number.isFinite(Number(item.order)) ? Number(item.order) : null,
             };
           })
           .filter((item) => item.ru && item.sr && item.audio)
