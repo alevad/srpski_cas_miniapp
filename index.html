@@ -212,7 +212,7 @@
           ? 'Вопрос-ответ'
           : (item.mode === 'dialog'
             ? 'Диалог'
-            : (isReverse ? 'SRS (обратный)' : 'SRS')));
+            : (isReverse ? 'SRS Sr\u2192Ru' : 'SRS Ru\u2192Sr')));
       if (isAudition && !state.revealed) {
         ruText.textContent = ui.auditionHint;
         srText.textContent = '';
