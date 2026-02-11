@@ -204,8 +204,15 @@
         ruText.textContent = ui.auditionHint;
         srText.textContent = '';
       } else {
-        const prompt = (item.mode === 'qa' || item.mode === 'dialog' || isReverse) ? item.sr : item.ru;
-        const answer = (item.mode === 'qa' || item.mode === 'dialog' || isReverse) ? item.ru : item.sr;
+        let prompt = item.ru;
+        let answer = item.sr;
+        if (item.mode === 'audition') {
+          prompt = item.sr;
+          answer = item.ru;
+        } else if (item.mode === 'qa' || item.mode === 'dialog' || isReverse) {
+          prompt = item.sr;
+          answer = item.ru;
+        }
         ruText.textContent = prompt;
         srText.textContent = answer;
       }
