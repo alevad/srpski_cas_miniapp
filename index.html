@@ -103,6 +103,7 @@
       playLabel: '\u25b6\u0020\u0421\u043b\u0443\u0448\u0430\u0442\u044c',
       revealLabel: '\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u044c\u0020\u043e\u0442\u0432\u0435\u0442',
       revealHideLabel: '\u0421\u043a\u0440\u044b\u0442\u044c\u0020\u043e\u0442\u0432\u0435\u0442',
+      revealTextLabel: '\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u044c\u0020\u0442\u0435\u043a\u0441\u0442',
       gradeHard: '\u0422\u044f\u0436\u0435\u043b\u043e',
       gradeGood: '\u0425\u043e\u0440\u043e\u0448\u043e',
       gradeEasy: '\u041b\u0435\u0433\u043a\u043e',
@@ -196,15 +197,20 @@
         return;
       }
       const isReverse = item.direction === 'reverse';
+      const isAudition = item.mode === 'audition';
       ruText.textContent = isReverse ? item.sr : item.ru;
       srText.textContent = isReverse ? item.ru : item.sr;
       sceneLabel.textContent = `A1 ${BULLET} ${SCENE_TITLE}`;
       cardCounter.textContent = `${state.index + 1}/${deck.length}`;
       srText.classList.toggle('hidden', !state.revealed);
-      revealBtn.textContent = state.revealed ? ui.revealHideLabel : ui.revealLabel;
+      if (state.revealed) {
+        revealBtn.textContent = ui.revealHideLabel;
+      } else {
+        revealBtn.textContent = isAudition ? ui.revealTextLabel : ui.revealLabel;
+      }
       state.audioUrl = resolveAudioUrl(item);
       playBtn.disabled = !state.audioUrl;
-      setGradesEnabled(state.revealed);
+      setGradesEnabled(state.revealed && !isAudition);
       saveState();
     }
 
@@ -346,6 +352,82 @@
       return `${AUDIO_BASE}/${item.audio}`;
     }
 
+    function extractLevel(cardId) {
+      const raw = String(cardId || '');
+      const m = raw.match(/^(A1|A2|B1|B2)_/);
+      return m ? m[1] : 'A1';
+    }
+
+    function shuffle(arr) {
+      const out = arr.slice();
+      for (let i = out.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    }
+
+    function buildLesson(cards) {
+      if (!cards.length) {
+        return [];
+      }
+      const level = extractLevel(cards[0].id);
+      const cfg = {
+        A1: { minutes: 20, secPerCard: 35, aud: 0.40, srsDirect: 0.28, srsReverse: 0.07, qa: 0.15, dialog: 0.10 },
+        A2: { minutes: 25, secPerCard: 35, aud: 0.30, srsDirect: 0.28, srsReverse: 0.12, qa: 0.20, dialog: 0.10 },
+        B1: { minutes: 30, secPerCard: 40, aud: 0.15, srsDirect: 0.21, srsReverse: 0.14, qa: 0.25, dialog: 0.25 },
+        B2: { minutes: 35, secPerCard: 40, aud: 0.10, srsDirect: 0.15, srsReverse: 0.15, qa: 0.25, dialog: 0.35 },
+      }[level] || { minutes: 20, secPerCard: 35, aud: 0.40, srsDirect: 0.28, srsReverse: 0.07, qa: 0.15, dialog: 0.10 };
+
+      const total = Math.max(1, Math.floor((cfg.minutes * 60) / cfg.secPerCard));
+      const directPool = cards.filter((c) => c.direction !== 'reverse');
+      const reversePool = cards.filter((c) => c.direction === 'reverse');
+
+      let audCount = Math.round(total * cfg.aud);
+      let srsDirectCount = Math.round(total * cfg.srsDirect);
+      let srsReverseCount = Math.round(total * cfg.srsReverse);
+      const dialogAvailable = false;
+
+      if (!dialogAvailable) {
+        const freed = Math.round(total * (cfg.qa + cfg.dialog));
+        const addToAud = Math.round(freed * 0.4);
+        const addToSrs = Math.max(0, freed - addToAud);
+        audCount += addToAud;
+        srsDirectCount += addToSrs;
+      }
+
+      const used = new Set();
+      const audition = [];
+      const srsDirect = [];
+      const srsReverse = [];
+
+      shuffle(directPool).forEach((card) => {
+        if (audition.length < audCount) {
+          audition.push({ ...card, mode: 'audition' });
+          used.add(card.id);
+        }
+      });
+
+      shuffle(directPool).forEach((card) => {
+        if (srsDirect.length >= srsDirectCount) {
+          return;
+        }
+        if (used.has(card.id)) {
+          return;
+        }
+        srsDirect.push({ ...card, mode: 'srs' });
+        used.add(card.id);
+      });
+
+      shuffle(reversePool).forEach((card) => {
+        if (srsReverse.length < srsReverseCount) {
+          srsReverse.push({ ...card, mode: 'srs' });
+        }
+      });
+
+      return audition.concat(srsDirect, srsReverse);
+    }
+
     async function loadDeck() {
       try {
         const res = await fetch(DATA_URL);
@@ -354,7 +436,7 @@
         }
         const data = await res.json();
         const items = Array.isArray(data) ? data : (data.cards || []);
-        deck = items
+        const base = items
           .map((item) => {
             const tags = String(item.tags || '');
             const direction = item.direction || (tags.includes('direction:reverse') ? 'reverse' : 'direct');
@@ -367,7 +449,8 @@
             };
           })
           .filter((item) => item.ru && item.sr && item.audio)
-          .slice(0, 100);
+          .slice(0, 200);
+        deck = buildLesson(base);
         state.deckReady = deck.length > 0;
       } catch (err) {
         deck = [];
