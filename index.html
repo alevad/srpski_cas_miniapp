@@ -549,11 +549,11 @@
       }
       const level = extractLevel(cards[0].id);
       const cfg = {
-        A1: { minutes: 20, secPerCard: 35, aud: 0.40, srsDirect: 0.28, srsReverse: 0.07, qa: 0.15, dialog: 0.10 },
-        A2: { minutes: 25, secPerCard: 35, aud: 0.30, srsDirect: 0.28, srsReverse: 0.12, qa: 0.20, dialog: 0.10 },
-        B1: { minutes: 30, secPerCard: 40, aud: 0.15, srsDirect: 0.21, srsReverse: 0.14, qa: 0.25, dialog: 0.25 },
-        B2: { minutes: 35, secPerCard: 40, aud: 0.10, srsDirect: 0.15, srsReverse: 0.15, qa: 0.25, dialog: 0.35 },
-      }[level] || { minutes: 20, secPerCard: 35, aud: 0.40, srsDirect: 0.28, srsReverse: 0.07, qa: 0.15, dialog: 0.10 };
+        A1: { minutes: 20, secPerCard: 25, aud: 0.20, srsDirect: 0.50, srsReverse: 0.20, qa: 0.05, dialog: 0.05 },
+        A2: { minutes: 25, secPerCard: 25, aud: 0.20, srsDirect: 0.40, srsReverse: 0.10, qa: 0.20, dialog: 0.10 },
+        B1: { minutes: 30, secPerCard: 25, aud: 0.15, srsDirect: 0.21, srsReverse: 0.14, qa: 0.25, dialog: 0.25 },
+        B2: { minutes: 35, secPerCard: 25, aud: 0.10, srsDirect: 0.15, srsReverse: 0.15, qa: 0.25, dialog: 0.35 },
+      }[level] || { minutes: 20, secPerCard: 25, aud: 0.20, srsDirect: 0.50, srsReverse: 0.20, qa: 0.05, dialog: 0.05 };
 
       const total = Math.max(1, Math.floor((cfg.minutes * 60) / cfg.secPerCard));
       const singlePool = cards.filter((c) => c.kind !== 'dlg_line');
