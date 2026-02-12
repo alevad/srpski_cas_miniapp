@@ -32,26 +32,30 @@
     </div>
 
     <section class="panel" id="gate">
-      <h1 id="gateTitle"></h1>
-      <p class="lead" id="gateLead"></p>
-      <div class="block-intro">
-        <div class="block-title" id="blockGateTitle"></div>
-        <div class="block-desc" id="blockGateDesc"></div>
+      <div class="gate-stack">
+        <h1 id="gateTitle"></h1>
+        <p class="lead" id="gateLead"></p>
+        <div class="block-intro">
+          <div class="block-title" id="blockGateTitle"></div>
+          <div class="block-desc" id="blockGateDesc"></div>
+        </div>
+        <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
+        <div class="hint" id="startHint"></div>
       </div>
-      <button class="btn primary" id="startBtn" type="button" disabled>Start</button>
-      <div class="hint" id="startHint"></div>
     </section>
 
     <section class="panel hidden" id="trainer">
-      <div class="phrase" id="ruText"></div>
-      <button class="btn play" id="playBtn" type="button"></button>
-      <button class="btn ghost" id="revealBtn" type="button"></button>
-      <div class="answer hidden" id="srText"></div>
-      <button class="btn ghost hidden" id="nextBtn" type="button"></button>
-      <div class="grades hidden" id="grades">
-        <button class="grade hard" data-grade="hard" id="gradeHard" type="button"></button>
-        <button class="grade good" data-grade="good" id="gradeGood" type="button"></button>
-        <button class="grade easy" data-grade="easy" id="gradeEasy" type="button"></button>
+      <div class="trainer-stack">
+        <div class="phrase" id="ruText"></div>
+        <button class="btn play" id="playBtn" type="button"></button>
+        <button class="btn ghost" id="revealBtn" type="button"></button>
+        <div class="answer hidden" id="srText"></div>
+        <button class="btn ghost hidden" id="nextBtn" type="button"></button>
+        <div class="grades hidden" id="grades">
+          <button class="grade hard" data-grade="hard" id="gradeHard" type="button"></button>
+          <button class="grade good" data-grade="good" id="gradeGood" type="button"></button>
+          <button class="grade easy" data-grade="easy" id="gradeEasy" type="button"></button>
+        </div>
       </div>
     </section>
 
