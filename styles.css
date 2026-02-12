@@ -99,6 +99,24 @@ body {
   font-weight: 400;
 }
 
+.block-intro {
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.block-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.block-desc {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .lead {
   margin: 0 0 16px;
   color: var(--muted);
