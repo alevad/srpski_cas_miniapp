@@ -92,11 +92,24 @@ body {
 }
 
 #gate {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   min-height: 360px;
+}
+
+#gate h1,
+#gate .lead,
+#gate .block-intro {
+  grid-row: 2;
+  justify-self: center;
+}
+
+#gate .btn.primary {
+  grid-row: 3;
+  justify-self: center;
+  align-self: start;
+  margin-top: 0;
 }
 
 #gateLead:empty {
@@ -112,7 +125,7 @@ body {
 }
 
 #gate h1 {
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 
 .block-intro {
@@ -160,7 +173,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 160px;
+  flex: 1 1 auto;
+  min-height: 140px;
 }
 
 #trainer {
@@ -181,6 +195,10 @@ body {
 #trainer .answer,
 #trainer .grades {
   margin: 0;
+}
+
+#trainer .answer {
+  margin-top: auto;
 }
 
 #trainer .btn {
