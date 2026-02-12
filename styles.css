@@ -122,6 +122,9 @@ body {
 
 #gate h1 {
   margin: 0;
+  display: block;
+  width: 100%;
+  text-align: center;
 }
 
 .block-intro {
@@ -148,6 +151,8 @@ body {
   color: var(--muted);
   margin-top: 4px;
   text-align: center;
+  display: block;
+  width: 100%;
 }
 
 .block-spacer {
