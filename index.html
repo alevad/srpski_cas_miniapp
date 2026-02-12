@@ -247,7 +247,7 @@
           ? 'Вопрос-ответ'
           : (item.mode === 'dialog'
             ? 'Диалог'
-            : (isReverse ? 'SRS Sr\u2192Ru' : 'SRS Ru\u2192Sr')));
+            : (isReverse ? 'Метод SRS Sr\u2192Ru' : 'Метод SRS Ru\u2192Sr')));
       const blockName = item.blockTitle || fallbackBlock;
       if (isAudition && !state.revealed) {
         ruText.textContent = ui.auditionHint;
