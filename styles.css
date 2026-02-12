@@ -166,7 +166,7 @@ body {
 #trainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   min-height: 360px;
 }
 
@@ -175,6 +175,16 @@ body {
   font-size: 24px;
   color: var(--accent);
   text-align: center;
+}
+
+#trainer .phrase,
+#trainer .answer,
+#trainer .grades {
+  margin: 0;
+}
+
+#trainer .btn {
+  margin-bottom: 0;
 }
 
 .btn {
