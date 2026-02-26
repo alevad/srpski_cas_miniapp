@@ -73,10 +73,10 @@ body {
 
 /* ── Gate logo (shown only on start screen) ── */
 .gate-logo {
-  width: 48px !important;
-  height: 48px !important;
-  max-width: 18vw !important;
-  max-height: 18vw !important;
+  width: 96px !important;
+  height: 96px !important;
+  max-width: 36vw !important;
+  max-height: 36vw !important;
   object-fit: contain;
   margin-bottom: 4px;
 }
@@ -161,14 +161,14 @@ body {
 }
 
 .block-title {
-  font-size: 18px;
+  font-size: 27px;
   font-weight: 400;
   color: var(--text);
   text-align: center;
 }
 
 .block-desc {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 400;
   color: var(--muted);
   margin-top: 4px;
@@ -380,3 +380,9 @@ body {
 
   /* grades stay 3-col on mobile — horizontal layout intentional */
 }
+
+/* ── Gate screen: 1.5× fonts ── */
+#gate h1    { font-size: 33px; }
+#gate .lead { font-size: 24px; }
+#gate .hint { font-size: 18px; }
+#gate .btn  { font-size: 24px; }
