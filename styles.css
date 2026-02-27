@@ -73,10 +73,10 @@ body {
 
 /* ── Gate logo (shown only on start screen) ── */
 .gate-logo {
-  width: 96px !important;
-  height: 96px !important;
-  max-width: 36vw !important;
-  max-height: 36vw !important;
+  width: 115px !important;
+  height: 115px !important;
+  max-width: 40vw !important;
+  max-height: 40vw !important;
   object-fit: contain;
   margin-bottom: 4px;
 }
