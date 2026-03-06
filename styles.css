@@ -77,8 +77,8 @@ body {
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 6px 12px;
-  font-size: 18px;
+  padding: 7px 12px;
+  font-size: 25px;
   cursor: pointer;
   color: var(--text);
   line-height: 1;
@@ -89,10 +89,10 @@ body {
 
 /* ── Gate logo (shown only on start screen) ── */
 .gate-logo {
-  width: 115px !important;
-  height: 115px !important;
-  max-width: 40vw !important;
-  max-height: 40vw !important;
+  width: 127px !important;
+  height: 127px !important;
+  max-width: 44vw !important;
+  max-height: 44vw !important;
   object-fit: contain;
   margin-bottom: 4px;
 }
