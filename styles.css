@@ -8,6 +8,7 @@
   --accent: #6366f1;
   --accent-strong: #4f46e5;
   --border: rgba(255, 255, 255, 0.08);
+  --border-btn: rgba(255, 255, 255, 0.25);
   --shadow: 0 18px 40px rgba(5, 10, 18, 0.5);
   --radius: 16px;
   --answer-color: #c7d2fe;  /* indigo-200: bright on dark background */
@@ -15,16 +16,17 @@
 
 body[data-theme="light"] {
   color-scheme: light;
-  --bg: #e9ecf2;
-  --surface: #f4f5f9;
-  --surface-strong: #e1e4ec;
-  --text: #14161b;
-  --muted: #5d6674;
-  --accent: #6366f1;
-  --accent-strong: #4f46e5;
-  --border: rgba(20, 25, 30, 0.1);
-  --shadow: 0 18px 40px rgba(20, 25, 35, 0.12);
-  --answer-color: #4338ca;  /* darker indigo on light background */
+  --bg: #eef4f6;
+  --surface: #ffffff;
+  --surface-strong: #dde8ec;
+  --text: #0f1218;
+  --muted: #354050;
+  --accent: #2a97aa;
+  --accent-strong: #1a7d8e;
+  --border: rgba(15, 25, 45, 0.14);
+  --border-btn: rgba(15, 25, 45, 0.18);
+  --shadow: 0 3px 14px rgba(15, 25, 45, 0.10), 0 1px 4px rgba(15, 25, 45, 0.06);
+  --answer-color: #1a6b78;
 }
 
 /* Запрещаем скролл на уровне html/body — прокрутка только внутри панелей */
@@ -51,14 +53,27 @@ body {
   font-weight: 400;
 }
 
+body[data-theme="light"] {
+  background: linear-gradient(180deg, #d8edf1 0%, #eef4f6 55%);
+}
+
+body[data-theme="light"] .btn.primary {
+  box-shadow: 0 8px 24px rgba(26, 125, 142, 0.38);
+}
+
+body[data-theme="light"] .btn.play {
+  background: rgba(42, 151, 170, 0.13);
+  border: 1px solid rgba(42, 151, 170, 0.35);
+}
+
 /* Приложение занимает весь экран, flex-колонка */
 .app {
   max-width: 680px;
   margin: 0 auto;
-  padding: 16px 18px 16px;
+  padding: 8px 8px 8px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   height: 100%;
   overflow: hidden;
 }
@@ -89,12 +104,13 @@ body {
 
 /* ── Gate logo (shown only on start screen) ── */
 .gate-logo {
-  width: 127px !important;
-  height: 127px !important;
-  max-width: 44vw !important;
-  max-height: 44vw !important;
+  width: 114px !important;
+  height: 114px !important;
+  max-width: 40vw !important;
+  max-height: 40vw !important;
   object-fit: contain;
-  margin-bottom: 4px;
+  margin-top: -5px;
+  margin-bottom: -5px;
 }
 
 /* ── Progress bar ── */
@@ -141,13 +157,12 @@ body {
 
 .gate-stack {
   width: 100%;
-  margin-top: auto;
-  margin-bottom: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   text-align: center;
+  padding-bottom: 12px;
 }
 
 #gateLead:empty,
@@ -405,3 +420,90 @@ body {
 #gate .lead { font-size: 24px; }
 #gate .hint { font-size: 18px; }
 #gate .btn  { font-size: 24px; }
+
+/* ── Dialog screen ────────────────────────────────── */
+.dlg-stack {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 16px 16px;
+  overflow: hidden;
+}
+
+/* Dialog list */
+#dlgList { flex: 1; overflow-y: auto; min-height: 0; }
+.dlg-list { display: flex; flex-direction: column; gap: 8px; }
+.dlg-list-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.15s;
+}
+.dlg-list-item:active { background: var(--surface-strong); }
+.dlg-list-icon { font-size: 1.56rem; flex-shrink: 0; }
+.dlg-list-meta { flex: 1; min-width: 0; }
+.dlg-list-title { font-size: 1.08rem; font-weight: 600; }
+.dlg-list-sub   { font-size: 0.94rem; color: var(--muted); margin-top: 2px; }
+.dlg-list-arrow { color: var(--muted); font-size: 1.32rem; }
+
+/* Dialog player */
+#dlgPlayer { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+#dlgTitle { flex-shrink: 0; }
+.dlg-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  padding-bottom: 8px;
+}
+.dlg-bubble {
+  max-width: 82%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.dlg-bubble.other {
+  align-self: flex-start;
+  margin-left: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.dlg-bubble.user {
+  align-self: flex-end;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.38);
+  color: var(--text);
+}
+.dlg-bubble.active { opacity: 1; box-shadow: 0 0 0 2px var(--accent); }
+.dlg-bubble.dimmed { opacity: 0.45; }
+.dlg-bubble-role { font-size: 1.0rem; color: var(--muted); margin-bottom: 2px; }
+.dlg-bubble-sr { font-weight: 500; }
+.dlg-bubble-ru { font-size: 1.15rem; color: var(--muted); margin-top: 3px; display: none; }
+.dlg-bubble.ru-shown .dlg-bubble-ru { display: block; }
+
+.dlg-controls {
+  padding-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.dlg-controls .btn { flex: 1; }
+
+.lvl-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
